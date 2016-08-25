@@ -19,7 +19,13 @@ When running the script, you can pass 2 potential arguments:
         This will save the image as 'image1.png' in the local directory.
         
 ---
+# Dependencies
 
+1. Python 3
+2. [BeautifulSoup 4](https://www.crummy.com/software/BeautifulSoup/)
+3. [Requests](http://docs.python-requests.org/en/master/)
+
+---
 To have a new wallpaper on every boot (win 10):
 
 Bring up the 'run' menu by pressing `win` + `R` on your keyboard and enter `shell:startup` to open the 'Startup' folder. Drop the script in this folder and it will run on every boot, giving you a new wallpaper every time.
