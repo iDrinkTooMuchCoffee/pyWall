@@ -1,6 +1,6 @@
 # Dependencies
 
-1. Python 3
+1. [Python 3](https://www.python.org/downloads/)
 2. [BeautifulSoup 4](https://www.crummy.com/software/BeautifulSoup/)
 3. [Requests](http://docs.python-requests.org/en/master/)
 
