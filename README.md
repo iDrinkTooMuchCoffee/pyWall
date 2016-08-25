@@ -1,6 +1,7 @@
 # Usage
 
 When running the script, you can pass 2 potential arguments:
+
 1. **Category**
 
 	- The category that the script will search in for your image.
