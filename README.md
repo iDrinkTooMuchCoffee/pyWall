@@ -12,8 +12,8 @@ When running the script, you can pass 2 potential arguments:
 1. **Category**
 
 	- The category that the script will search in for your image.
-	- Valid categories are `General`, `People`, and `Anime`.
-	- When the argument is left blank, the search includes all 3 categories.
+	- Valid categories are `General`, `People`, `Anime`, and `All`.
+	- When the argument is left blank, the search defaults to All.
 
 2. **Save Directory**
 
