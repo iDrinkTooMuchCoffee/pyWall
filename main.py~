@@ -12,13 +12,6 @@ import ctypes
 from random import randint
 from bs4 import BeautifulSoup
 
-"""
-if sys.stdout.encoding != 'cp850':
-	sys.stdout = codecs.getwriter('cp850')(sys.stdout.buffer, 'strict')
-if sys.stderr.encoding != 'cp850':
-	sys.stderr = codecs.getwriter('cp850')(sys.stderr.buffer, 'strict')
-"""
-
 imgDir = None
 catNum = None
 category = ""

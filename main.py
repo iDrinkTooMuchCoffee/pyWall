@@ -38,6 +38,8 @@ elif category.lower() == "people":
 	catNum = '001'
 elif category.lower() == "general":
 	catNum = '100'
+elif category.lower() == "all":
+	catNum = '111'
 else:
 	catNum = '111'
 
