@@ -25,7 +25,7 @@ When running the script, you can pass 2 potential arguments:
 	- When left blank, it will save in the local directory of the script.
 	- This argument can also be used to just apply a filename, while saving it in the local directory. For example,
 		
-        `pyWall.py General image1`
+        `pyWall.py -c General -d image1`
         
         This will save the image as 'image1.png' in the local directory.
 
