@@ -7,6 +7,7 @@ import datetime
 import requests
 import urllib
 import shutil
+import argparse
 import codecs
 import ctypes
 from random import randint
@@ -19,17 +20,24 @@ nowTime = str(datetime.datetime.now().time()).replace(':', '.')
 defaultSave = "cc_" + str(datetime.datetime.now().date()) + "_" + nowTime + ".png"
 
 # handle argument inputs
-if len(sys.argv) == 2:
-	category = sys.argv[1]
+parser = argparse.ArgumentParser()
+parser.add_argument("-d", "--directory", help="directory to save files in")
+parser.add_argument("-c", "--category", help="category to search in. Valid options: general, people, anime, all")
+args = parser.parse_args()
+
+if args.directory:
+	saveDir = "%s.png" % args.directory
+	# unreliable way of checking if a full directory was given or just a filename
+	if '\\' not in saveDir:
+		imgDir = str(os.getcwd()) + "\\" + saveDir
+	else:
+		imgDir = saveDir
+else:
 	saveDir = defaultSave
 	imgDir = str(os.getcwd()) + "\\" + saveDir
-elif len(sys.argv) == 3:
-	category = sys.argv[1]
-	saveDir = sys.argv[2] + ".png"
-	imgDir = saveDir
-elif len(sys.argv) == 1:
-	saveDir = defaultSave
-	imgDir = str(os.getcwd()) + "\\" + saveDir
+
+if args.category:
+	category = args.category 
 
 # set the url parameter based on category input
 if category.lower() == "anime":
@@ -38,8 +46,6 @@ elif category.lower() == "people":
 	catNum = '001'
 elif category.lower() == "general":
 	catNum = '100'
-elif category.lower() == "all":
-	catNum = '111'
 else:
 	catNum = '111'
 
@@ -96,5 +102,6 @@ soup = BeautifulSoup(r.content, 'html.parser')
 ParseImage()
 
 # set current wallpaper to the downloaded image
+print (imgDir)
 SPI_SETDESKWALLPAPER = 20
 ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, imgDir, 0)
