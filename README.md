@@ -13,12 +13,14 @@ When running the script, you can pass 2 potential arguments:
 
 1. **Category**
 
+	- `--category` or `-c`
 	- The category that the script will search in for your image.
 	- Valid categories are `General`, `People`, `Anime`, and `All`.
 	- When the argument is left blank, the search defaults to All.
 
 2. **Save Directory**
 
+	- `--directory` or `-d`
 	- The directory in which to save the image.
 	- When left blank, it will save in the local directory of the script.
 	- This argument can also be used to just apply a filename, while saving it in the local directory. For example,
