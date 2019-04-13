@@ -1,4 +1,4 @@
-# Dependencies
+# Required
 
 - [Python 3](https://www.python.org/downloads/)
 
