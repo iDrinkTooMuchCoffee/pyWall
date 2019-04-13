@@ -28,6 +28,18 @@ When running the script, you can pass 2 potential arguments:
         `pyWall.py -c General -d image1`
         
         This will save the image as 'image1.png' in the local directory.
+        
+ 3. **Resolution**
+ 	
+    - `--resolution` or `-r`
+    - Desired _exact_ resolution.
+    - Use `--resolution_plus` or -`rp` to include available higher resolutions as well.
+    - Example: `-r 2560x1440` or `-rp 1920x1080`
+
+4. **Aspect Ratio**
+
+	- `aspect-ratio` or `-ar`
+	- Example: `-ar 16x9`
 
 ---
 To have a new wallpaper on every boot (win 10):
