@@ -10,6 +10,7 @@
 # Usage
 
 When running the script, you can pass 4 potential arguments:
+
 Example: `python pywall.py -r 1920x1080 -c general -ar 16x9 -d wallpaper1`
 
 1. **Category**
