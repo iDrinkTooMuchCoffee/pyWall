@@ -13,12 +13,28 @@ import ctypes
 from random import randint
 from bs4 import BeautifulSoup
 
+# setup default naming convention.
+# TODO: allow custom filenames and directories through argparse
+nowTime = str(datetime.datetime.now().time()).replace(':', '.')
+defaultSave = "cc_" + str(datetime.datetime.now().date()) + "_" + nowTime + ".png"
+imgDir = str(os.getcwd()) + "\\" + defaultSave
+
 category = "" # user input category string
-imgDir = None
 catNum = "111" # category number code according to wallhaven
 resolution = "1920x1080"
 res_type = "resolutions" # defaults to exact resolution
 ratio = "16x9"
+linkArray = []
+
+
+#TODO: allow choosing of sorting
+#url = 'https://alpha.wallhaven.cc/search?categories=' + catNum + '&purity=100&' + res_type + '=' + resolution + '&ratios=' + ratio + '&sorting=favorites&order=desc&page='
+url = 'https://alpha.wallhaven.cc/search?categories=' + catNum + '&purity=100&' + res_type + '=' + resolution + '&ratios=' + ratio + '&sorting=random&order=desc&page='
+page = randint(1,15)
+endpoint = url + str(page)
+
+r = requests.get(endpoint)
+soup = BeautifulSoup(r.content, 'html.parser')
 
 # handle argument inputs
 parser = argparse.ArgumentParser()
@@ -31,102 +47,84 @@ args = parser.parse_args()
 
 print("Parameters:")
 
-if args.directory:
-	saveDir = "%s.png" % args.directory
-	# unreliable way of checking if a full directory was given or just a filename
-	if '\\' not in saveDir:
-		imgDir = str(os.getcwd()) + "\\" + saveDir
-	else:
-		imgDir = saveDir
-else:
-	nowTime = str(datetime.datetime.now().time()).replace(':', '.')
-	defaultSave = "cc_" + str(datetime.datetime.now().date()) + "_" + nowTime + ".png"
-	saveDir = defaultSave
-	imgDir = str(os.getcwd()) + "\\" + saveDir
+def main():
+	ParseArgs()
+	ParsePage()
 
-if args.category:
-	category = args.category 
-	print("\tCategory: " + category)
+	i = randint(0,len(linkArray)-1)
+	imagePage = linkArray[i]
 
-if args.resolution:
-	res_type = "resolutions"
-	resolution = args.resolution
-	print("\tResolution: At least " + resolution)
+	ParseImage(imagePage)
 
-if args.resolution_plus:
-	res_type = "atleast"
-	resolution = args.resolution_plus
-	print("\tResolution: Exact " + resolution)
+	# set current wallpaper to the downloaded image
+	SPI_SETDESKWALLPAPER = 20
+	ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, imgDir, 0)
+	print("Success.")
+	print("Image saved to: " + str(imgDir))
 
-if args.aspect_ratio:
-	ratio = args.aspect_ratio
-	print("\tAspect Ratio: " + ratio)
+def ParseArgs():
+	if args.category:
+		category = args.category 
+		print("\tCategory: " + category)
 
-# set the url parameter based on category input
-if category.lower() == "anime":
-	catNum = '010'
-elif category.lower() == "people":
-	catNum = '001'
-elif category.lower() == "general":
-	catNum = '100'
+	if args.resolution:
+		res_type = "resolutions"
+		resolution = args.resolution
+		print("\tResolution: Exact " + resolution)
 
-url = 'https://alpha.wallhaven.cc/search?categories=' + catNum + '&purity=100&' + res_type + '=' + resolution + '&ratios=' + ratio + '&sorting=favorites&order=desc&page='
-page = randint(1,15)
-endpoint = url + str(page)
-linkArray = []
+	if args.resolution_plus:
+		res_type = "atleast"
+		resolution = args.resolution_plus
+		print("\tResolution: At least " + resolution)
+
+	if args.aspect_ratio:
+		ratio = args.aspect_ratio
+		print("\tAspect Ratio: " + ratio)
+
+	# set the url parameter based on category input
+	if category.lower() == "anime":
+		catNum = '010'
+	elif category.lower() == "people":
+		catNum = '001'
+	elif category.lower() == "general":
+		catNum = '100'
+
 
 def DownloadImage(link):
 	print("downloading image...")
-	response = requests.get('https:' + link)
+	response = requests.get(link)
 	if response.status_code == 200:
-		f = open(saveDir, 'wb')
+		f = open(str(imgDir), 'wb')
 		f.write(response.content)
 		f.close()
 
-# scrapes a random page in the favorites section
-def ParseFavs():
+# scrapes a random page in the random section
+# returns an array made up of urls from the scraped page
+def ParsePage():
 	print("Choosing a random wallpaper...")
-	links = []
 	for link in soup.find_all("a"):
 		href = link.get("href")
 		if not href:
 			continue
-		if "favorites" in href:
+		#if "favorites" in href:
+		if "random" in href:
 			continue
 		if "thumbTags" in href:
 			continue
-		if "wallpaper" not in href:
+		if "/w/" not in href:
 			continue
-		links.append(href)
 		linkArray.append(href)
-	return links
 
 # get the direct image link for the wallpaper
-def ParseImage():
+def ParseImage(imagePage):
+	r = requests.get(imagePage)
+	print("imagepage: " + str(imagePage))
+	soup = BeautifulSoup(r.content, 'html.parser')
 	print("retrieving image link...")
-	for link in soup.find_all("meta"):
-		cont = link.get("content")
-		if not cont:
-			continue
-		if "wallpapers.wallhaven.cc/wallpapers" not in cont:
-			continue
-		DownloadImage(cont)
+	links = soup.find_all('img')
+	for image in links:
+		if "/full/" in image['src']:
+			DownloadImage(image['src'])
 
-
-r = requests.get(endpoint)
-soup = BeautifulSoup(r.content, 'html.parser')
-
-
-i = randint(0,len(ParseFavs())-1)
-imagePage = linkArray[i]
-
-r = requests.get(imagePage)
-soup = BeautifulSoup(r.content, 'html.parser')
-
-ParseImage()
-
-# set current wallpaper to the downloaded image
-SPI_SETDESKWALLPAPER = 20
-ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, imgDir, 0)
-print("Success.")
-print("Image saved to: " + imgDir)
+if __name__ == "__main__":
+	main()
